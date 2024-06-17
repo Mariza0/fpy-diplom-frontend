@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
+import { RootState } from "../../interfaces";
 
 export const Error = () => {
 
     const { error } = useSelector(
-        (state: any) => state.api
+        (state: RootState) => state.api
       );
 
     return (

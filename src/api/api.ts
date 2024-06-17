@@ -2,12 +2,10 @@ import { GetSessionResponse, RegisterResponse } from "../interfaces";
 
 const server = import.meta.env.VITE_SERVER;
 
-const state = {
-  csrf: '',
-}
+let csrfState = '';
 
 const csrfToken = async () => {
-  let csrf = state.csrf;
+  const csrf = csrfState;
   if (!csrf) {
       const newCsrfToken = await get_csrf();
       console.log(newCsrfToken,'newCsrfToken')
@@ -40,7 +38,7 @@ export const register_user = async (data: { username: string,
       const responseData = await response.text();
       const res = JSON.parse(responseData);
       const csrfToken = res.csrf_token || '';
-      state.csrf = csrfToken;
+      csrfState = csrfToken;
 
       return {
         status: response.status,
@@ -75,8 +73,8 @@ export const getSession = async (): Promise<GetSessionResponse> => {
     console.log(err);
     return {isAuthenticated: false, message: 'Произошла ошибка. Повторите попытку соединения с сервером позднее.', 
     status: 403, username: '', userId: '', is_admin: false}
-  };
-};
+  }
+}
 
 
 //Если не аутентифицирован - получаем csrfToken
@@ -91,7 +89,7 @@ export const get_csrf = async () => {
       return csrfToken;
     } catch (err) {
       console.log(err);
-    };
+    }
   }
 
   // const isResponseOk = (response: { status: number; json: () => any; statusText: string | undefined; }) => {
@@ -106,7 +104,7 @@ export const get_csrf = async () => {
   // в случае если пользователь не авторизован, отправляем логин/пароль
   export const login = async ( data: { username: string, password: string, csrfToken: string  }) => {
 
-    let csrfToken = data.csrfToken;
+    const csrfToken = data.csrfToken;
     console.log(csrfToken,'csrfToken')
 
     try {
@@ -131,7 +129,7 @@ export const get_csrf = async () => {
 // запрос списка пользователей для администратора
 export const fetch_users = async () => {
 
-  let csrf = await csrfToken() || '';
+  const csrf = await csrfToken() || '';
 
   try {
     const response = await fetch(`${server}/users/`, {
@@ -161,7 +159,7 @@ export const fetch_users = async () => {
 // запрос данных профиля
 export const fetch_user_data = async (user_id: string) => {
 
-  let csrf = await csrfToken() || '';
+  const csrf = await csrfToken() || '';
 
   try {
     const response = await fetch(`${server}/users/${Number(user_id)}/`, {

@@ -1,8 +1,17 @@
 import { FormEventHandler, useState } from "react";
 import { ModalChangeFileNameProps } from "../../interfaces";
 import { fetch_change_file_name } from "../../api/storage";
+import { apiError } from "../../actions/apiCreators";
+import { useDispatch } from "react-redux";
+
+interface FormInterface {
+    old_name: string;
+    new_name: string;
+}
 
 export const ModalChangeFileName: React.FC<ModalChangeFileNameProps> = ({ isModalChangeFileName, fileId, fileName, onClose }) => {
+
+    const dispatch = useDispatch()
 
     const [formDataChangeFileName, setformDataChangeFileName] = useState({old_name: '', new_name: '' });
 
@@ -13,7 +22,7 @@ export const ModalChangeFileName: React.FC<ModalChangeFileNameProps> = ({ isModa
         e.preventDefault()
         const { name, value } = e.target;
 
-        setformDataChangeFileName((prevData: any) => ({
+        setformDataChangeFileName((prevData: FormInterface) => ({
             ...prevData,
             [name]: value
         }));
@@ -30,19 +39,21 @@ export const ModalChangeFileName: React.FC<ModalChangeFileNameProps> = ({ isModa
     const id = fileId;
 
     try {
-        const status = await fetch_change_file_name({name: name, id: String(id)})
-        console.log(status)
+        const res = await fetch_change_file_name({name: name, id: String(id)})
 
-        // закрываем модалку и очищаем форму
-       
-        setformDataChangeFileName({
-            old_name: '', new_name: '',})
-
-        onClose();
-
+        if (res?.status == 204) {
+            // закрываем модалку и очищаем форму
+            setformDataChangeFileName({
+                old_name: '', new_name: '',})
+            onClose();
+        } else { 
+            dispatch(apiError(String(res.error)));
+            onClose();
+          }
     } catch (error) {
         // обработка ошибок, если необходимо
         console.error('Произошла ошибка:', error);
+        dispatch(apiError(String(error)))
     }
 };
 

@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getSession, get_csrf } from "../../api/api";
 import { apiCsrf, apiError, apiIsAuthenticated } from "../../actions/apiCreators";
+import { RootState } from "../../interfaces";
 
 export const Layout = () => {
 
   const dispatch = useDispatch();
 
-  const { csrf } = useSelector((state: any) => state.api);
+  const { csrf } = useSelector((state: RootState) => state.api);
   console.log(csrf,'csrf')
 
   useEffect(() => {
@@ -17,11 +18,11 @@ export const Layout = () => {
       try {
         const data = await getSession();
         if (data.status === 200 && data) {
-          localStorage.setItem("isAuthenticated", String(data.isAuthenticated));//sessionStorage.setItem("isAuthenticated", String(data.isAuthenticated));
-          localStorage.setItem("username", data.username || "");//sessionStorage.setItem("username", data.username || "");
-          localStorage.setItem('userId', data.userId || '');//sessionStorage.setItem('userId', data.userId || '');
+          localStorage.setItem("isAuthenticated", String(data.isAuthenticated));
+          localStorage.setItem("username", data.username || "");
+          localStorage.setItem('userId', data.userId || '');
           if (data.is_admin) {
-            localStorage.setItem('is_admin', String(data.is_admin));//sessionStorage.setItem('is_admin', String(data.is_admin));
+            localStorage.setItem('is_admin', String(data.is_admin));
           }
           dispatch(apiIsAuthenticated(true));
 
@@ -31,7 +32,7 @@ export const Layout = () => {
 
           // Обнуляем CSRF-токен, если пользователь не авторизован
           dispatch(apiCsrf(""));
-          localStorage.setItem("isAuthenticated", "false");//sessionStorage.setItem("isAuthenticated", "false");
+          localStorage.setItem("isAuthenticated", "false");
 
           // Запрашиваем новый CSRF-токен для неавторизованного пользователя
           const csrf = await get_csrf() || '';

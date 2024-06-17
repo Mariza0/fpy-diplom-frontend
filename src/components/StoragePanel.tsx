@@ -5,7 +5,7 @@ import { ModalFileUpload } from "./Modals/ModalFileUpload";
 import { ModalChangeComment } from "./Modals/ModalChangeComment"
 import { apiError } from "../actions/apiCreators";
 import { ModalChangeFileName } from "./Modals/ModalChangeFileName";
-import { Files, StoragePanelProps, User } from "../interfaces";
+import { File, Files, RootState, StoragePanelProps, User } from "../interfaces";
 import { ModalShareLink } from "./Modals/ModalShareLink";
 import { useParams } from "react-router-dom";
 import { ModalChangeUser } from "./Modals/ModalChangeUser";
@@ -13,11 +13,11 @@ import { fetch_user_data } from "../api/api";
 import { ModalConfirmDelete } from "./Modals/ModalConfirmDelete";
 import { Error } from "./Erorr";
 
+
 // панель хранилища любого пользователя
 export const StoragePanel: React.FC<StoragePanelProps> = ({ listFilesUser, username })  => {
 
-    console.log(listFilesUser,'listFilesUser')
-    const { error } = useSelector((state: any) => state.api);
+    const { error } = useSelector((state: RootState) => state.api);
 
     // берем user id из параметров ссылки
     const { userId } = useParams();
@@ -70,21 +70,13 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
     setIsModalFileNameChange(true)
 };
 
-    ///// открытие модального окна загрузки файла   
+    // открытие модального окна загрузки файла   
     const handleModal: MouseEventHandler<HTMLElement> = (e) => {
         //getCSRF();
         e.preventDefault()
         //setUploadStatus(true);
         setIsModalOpen(true);
     }
-
-    // при закрытии модального окна меняем StatusRefreshListFiles 
-   // и обновляем список файлов 
-    // useEffect(() => {
-    //     if (!isModalOpen) {
-    //         setStatusRefreshListFiles(prev => !prev);
-    //     }
-    // }, [isModalOpen]);
 
     useEffect(() => {
         if (statusRefreshListFiles) {
@@ -109,7 +101,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
             setStatusRefreshListFiles(false);
         }
-    }, [statusRefreshListFiles,]);
+    }, [statusRefreshListFiles, userId]);
 
     const [, setLoading] = useState(true);
     
@@ -148,9 +140,8 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
                      // обновляем список файлов
                      console.log('обновляем список файлов')
                      setStatusRefreshListFiles(true);
-                
                 }
-            };
+            }
         } catch(error) {
             dispatch(apiError(String(error)))
         } finally {
@@ -161,7 +152,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
     };
 
 
-    //////////// СКАЧИВАНИЕ файла//////////////
+    // СКАЧИВАНИЕ файла
     const handleDownloadFile: MouseEventHandler<HTMLElement> = async (e) => {
        e.preventDefault();
         const link = e.currentTarget;
@@ -216,7 +207,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
         }
     }
 
-    const formatDate = (isoString: any) => {
+    const formatDate = (isoString: string) => {
      const date = new Date(isoString);
      return date.toLocaleString();
       };
@@ -330,7 +321,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
                  </tr>
              </thead>
 
-            {sortedFiles.length >0 && sortedFiles.map((item: any, index: number) => (
+            {sortedFiles.length >0 && sortedFiles.map((item: File, index: number) => (
 
 <tbody>
   <tr key={item.id}>
@@ -342,7 +333,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
     { !item.comment && <button className="btn btn-outline-success btn-sm me-2" data-item-id={item.id} >Добавить комментарий</button> }
     </a>
     </td>  
-    <td>{(item.file_size / (1024 * 1024)).toFixed(2)}</td>
+    <td>{(Number(item.file_size) / (1024 * 1024)).toFixed(2)}</td>
     <td>{formatDate(item.upload_date)}</td>
     <td>
         {item.last_download_date && formatDate(item.last_download_date)}

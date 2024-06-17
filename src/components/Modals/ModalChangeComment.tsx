@@ -2,6 +2,10 @@ import { FormEventHandler, useState } from "react";
 import { fetch_change_comment } from "../../api/storage";
 import { ModalChangeCommentProps } from "../../interfaces";
 
+interface FormInterface {
+    old_comment: string;
+    new_comment: string;
+}
 
 export const ModalChangeComment: React.FC<ModalChangeCommentProps> = ({ isModalChangeComment, fileId, fileComment, onClose }) => {
 
@@ -12,7 +16,7 @@ export const ModalChangeComment: React.FC<ModalChangeCommentProps> = ({ isModalC
         e.preventDefault()
         const { name, value } = e.target;
     
-        setFormDataChangeComment((prevData: any) => ({
+        setFormDataChangeComment((prevData: FormInterface) => ({
             ...prevData,
             [name]: value
           }));

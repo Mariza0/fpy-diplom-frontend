@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { register_user } from "../../api/api";
 import { apiError, apiIsAuthenticated } from "../../actions/apiCreators";
+import { RootState } from "../../interfaces";
 
 export const Register = () => {
 
     const { csrf, error } = useSelector(
-        (state: any) => state.api
+        (state: RootState) => state.api
       );
 
     const dispatch = useDispatch()
@@ -44,7 +45,7 @@ export const Register = () => {
         if (password !== password2) {
             alert('Пароли не совпадают');
             return;
-        };
+        }
 
         const login = formData.login;
         const full_name = formData.full_name;

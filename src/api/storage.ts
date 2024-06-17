@@ -5,7 +5,7 @@ const state = {
 }
 
 const csrfToken = async () => {
-    let csrf = state.csrf;
+    const csrf = state.csrf;
     if (!csrf) {
         const newCsrfToken = await get_csrf();
         console.log(newCsrfToken,'newCsrfToken')
@@ -76,13 +76,11 @@ export const fetch_change_file_name = async (data:{name: string, id: string}) =>
         const formData = new FormData()
         formData.append('file_name', data.name || '');
         formData.append('id', data.id || '');
-        let csrfToken = state.csrf
-        
-        console.log(csrfToken,'csrfToken')
+        let csrfToken = state.csrf;
 
         if (!csrfToken) {
             console.log('запрос csrf');
-            csrfToken = await get_csrf() || '' //getCSRF() || '';
+            csrfToken = await get_csrf() || '';
         }
 
         const res = await fetch(`${server}/storage/changename/`, {
@@ -97,7 +95,8 @@ export const fetch_change_file_name = async (data:{name: string, id: string}) =>
         if (!res.ok) {
             throw new Error('Network response was not ok');
         }
-        return res.status
+        return await res.json();
+
     } catch (error) {
         console.error('Error downloading file:', error);
        

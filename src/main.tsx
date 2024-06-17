@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux';
-// @ts-ignore
+// @ts-expect-error:  Ожидаемая ошибка из-за несовместимости типов в API
 import store from "./store/index.js";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

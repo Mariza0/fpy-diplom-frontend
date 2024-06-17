@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { apiError, apiIsAuthenticated } from "../../actions/apiCreators";
 import { Error } from "../Erorr"
 import { login } from "../../api/api";
+import { RootState } from "../../interfaces";
 
 export const Login = () => {
 
@@ -11,7 +12,7 @@ export const Login = () => {
   const dispatch = useDispatch();
 
   const { error, csrf, loading } = useSelector(
-    (state: any) => state.api
+    (state: RootState) => state.api
   );
   const userId = localStorage.getItem('userId');//sessionStorage.getItem('userId');
   const is_authenticated = localStorage.getItem('isAuthenticated');//sessionStorage.getItem('isAuthenticated');
@@ -20,7 +21,7 @@ export const Login = () => {
     if (is_authenticated == 'true') {
       navigate(`/storage/users/${userId}`);
     }
-  }, [is_authenticated, navigate]);
+  }, [is_authenticated, navigate, userId]);
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");

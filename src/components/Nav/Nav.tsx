@@ -1,29 +1,30 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { apiError, apiLoading } from "../../actions/apiCreators";
 import { logout_user } from "../../api/api";
+import { RootState } from "../../interfaces";
 
 export const Nav = () => {
 
     const active = ({ isActive }: { isActive: boolean }) => isActive ? "active" : "";
-    const userId = localStorage.getItem('userId')//sessionStorage.getItem('userId')
-    const is_admin = localStorage.getItem('is_admin')//sessionStorage.getItem('is_admin')
-    let usernameSession = localStorage.getItem('username');//sessionStorage.getItem('username');
+    const userId = localStorage.getItem('userId');
+    const is_admin = localStorage.getItem('is_admin');
+    const usernameSessionRef = useRef(localStorage.getItem('username'));
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     // используем redux чтобы перерендеривать компонент при изменении глобального state 
     const { username } = useSelector(
-        (state: any) => state.api
+        (state: RootState) => state.api
       );
 
       useEffect(() => {
-        // при изменении имени пользователя в компоненте будет обновляться
-        if (username != usernameSession) {
-            usernameSession = username;
-        }
-    },[dispatch]);
+       // при изменении имени пользователя в компоненте будет обновляться
+       if (username !== usernameSessionRef.current) {
+        usernameSessionRef.current = username;
+    }
+}, [username]);
 
     // обнуляем ошибку для повторного входа
     const handleLink = async () => {  
@@ -62,10 +63,10 @@ export const Nav = () => {
                         Главная
                     </NavLink>
                 </li>
-                {usernameSession ? (
+                {usernameSessionRef.current ? (
                     <>
                         <li className="nav-item">
-                        <NavLink className="nav-link" to={`/storage/users/${userId}`}>{usernameSession}</NavLink>
+                        <NavLink className="nav-link" to={`/storage/users/${userId}`}>{usernameSessionRef.current}</NavLink>
                         </li>
 
                         <li className="nav-item">

@@ -1,10 +1,17 @@
 import { ChangeEvent, MouseEventHandler, useState } from "react";
 import { fetch_upload_file } from "../../api/storage";
 import { ModalFileUploadProps } from "../../interfaces";
+import { apiError } from "../../actions/apiCreators";
+import { useDispatch } from "react-redux";
+
+interface FormComment {
+    comment: string;
+}
 
 
 export const ModalFileUpload: React.FC<ModalFileUploadProps> = ({ isOpen, userId, onSub, onClose }) => {
-    console.log(userId,'userId')
+    
+    const dispatch = useDispatch();
 
     const [buttonText, setButtonText] = useState('Выберите файл');
 
@@ -19,7 +26,7 @@ export const ModalFileUpload: React.FC<ModalFileUploadProps> = ({ isOpen, userId
 
         try {
         if (selectedFile) {
-            //setUploadStatus(true);
+
             const res = await fetch_upload_file({file: selectedFile, userId: userId, comment: comment})
             console.log(res,'ответ после сохранения файла')
             const status = res?.status
@@ -29,8 +36,7 @@ export const ModalFileUpload: React.FC<ModalFileUploadProps> = ({ isOpen, userId
                 onClose();
                 // обновляем список файлов
                 onSub();
-                
-                
+
             }
         }
         else {
@@ -41,7 +47,7 @@ export const ModalFileUpload: React.FC<ModalFileUploadProps> = ({ isOpen, userId
         setButtonText('Выберите файл');
 
     } catch(error) {
-
+        dispatch(apiError(String(error)));
     }
 
     }
@@ -78,10 +84,10 @@ const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 
 // изменение ввода текста в поле комментарий
 const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     const { name, value } = e.target;
 
-    setFormComment((prevData: any) => ({
+    setFormComment((prevData: FormComment) => ({
         ...prevData,
         [name]: value
       }));

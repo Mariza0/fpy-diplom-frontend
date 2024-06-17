@@ -49,7 +49,7 @@ export const AdminPanel = () => {
 
     fetchlistUsers();
 
-    },[statusRefreshListFiles]);
+    },[statusRefreshListFiles, dispatch]);
     
     const [isModalChangeUser, setIsModaChangeUser] = useState(false);
 
@@ -210,7 +210,7 @@ export const AdminPanel = () => {
                  </tr>
              </thead>
 
-{sortedUsers && sortedUsers.map((user: User, index: Number) => (
+{sortedUsers && sortedUsers.map((user: User, index: number) => (
 
 <tbody>
   <tr key={user.id}>

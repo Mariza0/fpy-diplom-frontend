@@ -6,28 +6,34 @@ import { apiError } from "../../actions/apiCreators";
 
 export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeUser, data, onClose }) => {
 
+    const dispatch = useDispatch();
+
+    const [loading, setLoading] = useState(false);
+
+    // Инициализация состояния формы и начальных данных с пустыми значениями
+    const [formData, setFormData] = useState({
+        username: '',
+        full_name: '',
+        email: '',
+    });
+    const [initialData, setInitialData] = useState({
+        username: '',
+        full_name: '',
+        email: '',
+    });
+
+    useEffect(() => {
+        if (data) {
+            setFormData(data);
+            setInitialData(data);
+        }
+    }, [data]);
+
     if (!data) {
         return null;
       }
 
     const userId = data.id
-    console.log(data)
-
-    const dispatch = useDispatch()
-
-    const [loading, setLoading] = useState(false);
-    const [initialData, setInitialData] = useState(data); // состояние для сохранения первоначальных данных
-
-    const [formData, setFormData] = useState({
-        username: data.username,
-        full_name: data.full_name,
-        email: data.email,
-     });
-
-    useEffect(() => {
-        setFormData(data);
-        setInitialData(data); // сохраняем первоначальные данные при открытии модального окна
-    }, [data]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()

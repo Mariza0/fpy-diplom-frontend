@@ -34,7 +34,7 @@ export const UserDetailPage = () => {
                 }
             };
             loadFiles();
-        }, [navigate]);
+        }, [navigate, userId]);
     
     return (
   <>

@@ -1,4 +1,24 @@
 // types.ts
+export interface ApiState {
+  error: string | null;
+  username: string | null;
+  message: string | null;
+  is_authenticated: string | null;
+  csrf: string;
+  loading: boolean;
+}
+
+export interface RootState {
+  api: ApiState;
+}
+
+export interface initialState  { 
+  username: null, 
+  error: null, 
+  message: null, 
+  is_authenticated: false, 
+  csrf: null, loading: false }
+
 interface RegisterSuccessResponse {
     status: number;
     csrfToken: string;
@@ -78,8 +98,8 @@ export interface ModalChangeCommentProps {
     id: string;
     file_name: string;
     file_size: string;
-    upload_date: Date;
-    last_download_date: Date | null;
+    upload_date: string;
+    last_download_date: string | null;
     comment: string | null;
     file_path: string;
     special_link: string;
