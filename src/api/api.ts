@@ -188,14 +188,20 @@ export const fetch_change_user = async (userId: string, data: { username?:string
   if (full_name) formData.append('full_name', full_name);
 
   const apiUrl = `${server}/users/change/${Number(userId)}/`;
-  const csrf = await csrfToken() || '';
+
+  let csrfToken = csrfState;
+
+  if (!csrfToken) {
+
+      csrfToken = await get_csrf() || '';
+  }
 
   try {
     const response = await fetch(apiUrl, {
       method: 'PATCH',
       body: formData,
       headers: {
-        "X-CSRFToken": csrf,
+        "X-CSRFToken": csrfToken,
       },
       credentials: 'include'
     });

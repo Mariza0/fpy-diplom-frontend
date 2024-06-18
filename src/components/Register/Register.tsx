@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { register_user } from "../../api/api";
 import { apiError, apiIsAuthenticated } from "../../actions/apiCreators";
 import { RootState } from "../../interfaces";
+import { Tooltip, OverlayTrigger, TooltipProps } from 'react-bootstrap';
 
 export const Register = () => {
 
@@ -35,6 +36,16 @@ export const Register = () => {
           }));
             
       };
+
+    const validateLogin = (login: string): boolean => {
+        const regex = /^[a-zA-Z][a-zA-Z0-9]{3,19}$/;
+        return regex.test(login);
+    };
+
+    const validatePassword = (password: string): boolean => {
+        const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{6,}$/;
+        return regex.test(password);
+    };
      
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
@@ -50,6 +61,16 @@ export const Register = () => {
         const login = formData.login;
         const full_name = formData.full_name;
         const email = formData.email;
+
+        if (!validateLogin(login)) {
+            alert('Логин должен состоять только из латинских символов и цифр, начинаться с буквы, и быть длиной от 4 до 20 символов.');
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            alert('Пароль должен быть не менее 6 символов, содержать хотя бы одну заглавную букву, одну цифру и один специальный символ.');
+            return;
+        }
 
         const data = {
             username: login,
@@ -81,7 +102,22 @@ export const Register = () => {
         } finally {
             setLoading(false);
         }
-}
+    }
+    const renderTooltip = (props: TooltipProps) => (
+        <Tooltip id="button-tooltip" {...props}>
+        Пароль должен быть не менее 6 символов. Минимум с одной заглавной буквой,
+        одним специальным символом, одной цифрой.
+    </Tooltip>)
+
+    const renderTooltipLogin = (props: TooltipProps) => (
+    <Tooltip id="button-tooltip" {...props}>
+    Логин должен состоять только из латинских символов и цифр, начинаться с буквы, и быть длиной от 4 до 20 символов.
+    </Tooltip>)
+
+    const renderTooltipPassword = (props: TooltipProps) => (
+    <Tooltip id="button-tooltip" {...props}>
+    Пароли должны совпадать
+    </Tooltip>)
 
 return (
 <>
@@ -116,13 +152,19 @@ return (
 
                     <div className="form-group">
                         <label htmlFor="login">Логин</label>
+                        <OverlayTrigger 
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderTooltipLogin}>
+
                     <input type="login" className="form-control" 
                         id="login" 
                         name="login"
                         value={formData.login}
-                      
                         onChange={handleChange}
                         required/>
+
+                        </OverlayTrigger>
                     </div>
 
                     <div className="form-group">
@@ -131,7 +173,7 @@ return (
                         id="full_name" 
                         name="full_name"
                         value={formData.full_name}
-                  
+                        maxLength={50}
                         onChange={handleChange}
                         required/>
                     </div>
@@ -149,16 +191,28 @@ return (
 
                     <div className="form-group">
                         <label htmlFor="password">Пароль</label>
+
+                        <OverlayTrigger 
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderTooltip}>
+
                         <input type="password" className="form-control" 
                         id="password" 
                         name="password"
                         value={formData.password}
                     
-                        onChange={handleChange}/>
+                        onChange={handleChange} required/>
+                        </OverlayTrigger>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="password2">Повторите пароль</label>
+
+                        <OverlayTrigger 
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderTooltipPassword}>
                         <input type="password" className="form-control" 
                         id="password2" 
                         name="password2"
@@ -166,6 +220,7 @@ return (
                      
                         onChange={handleChange}
                         required/>
+                        </OverlayTrigger>
                     </div>
 
                     <button type="submit" className="btn btn-primary">Submit</button>
