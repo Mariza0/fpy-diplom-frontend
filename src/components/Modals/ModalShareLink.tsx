@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ModalShareLinkProps } from "../../interfaces";
 import { feth_share_link } from "../../api/storage";
 const server = import.meta.env.VITE_SERVER;
@@ -9,14 +9,14 @@ export const ModalShareLink: React.FC<ModalShareLinkProps> = ({ fileId, onClose 
     const [isModalShareLink, setIsModalShareLink] = useState(false);
    
       // поделиться ссылкой
-      const handleShareLink = async() => {
+      const handleShareLink = useCallback(async() => {
 
         try {
         const id = fileId;
         const res = await feth_share_link({id: id});
         const result = res?.result;
         const shareLink = await JSON.parse(result || '').link;
-        console.log(shareLink, 'shareLink');
+     
         // устанавливаем значение текущего комментария
         setFormShareLink({link : `${server}/storage/` + shareLink || ""});
         setIsModalShareLink(true);
@@ -25,8 +25,11 @@ export const ModalShareLink: React.FC<ModalShareLinkProps> = ({ fileId, onClose 
         console.error('Error fetching share link:', error);
         }
       
-    }
-    handleShareLink();
+    }, [fileId]);
+
+    useEffect(() => {
+        handleShareLink();
+    }, [handleShareLink]);
 
     // скопировать ссылку
     const handleCopyClick = () => {

@@ -39,15 +39,15 @@ export const ModalChangeFileName: React.FC<ModalChangeFileNameProps> = ({ isModa
     const id = fileId;
 
     try {
-        const res = await fetch_change_file_name({name: name, id: String(id)})
+        const status = await fetch_change_file_name({name: name, id: String(id)})
 
-        if (res?.status == 204) {
+        if (status == 204) {
             // закрываем модалку и очищаем форму
             setformDataChangeFileName({
                 old_name: '', new_name: '',})
             onClose();
         } else { 
-            dispatch(apiError(String(res.error)));
+            dispatch(apiError(String('Ошибка. Повторите позднее.')));
             onClose();
           }
     } catch (error) {

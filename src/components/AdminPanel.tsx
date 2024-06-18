@@ -29,7 +29,7 @@ export const AdminPanel = () => {
             dispatch(apiLoading(true));
             // запрос на получение списка всех пользователей
             const res = await fetch_users();
-            console.log(res, 'users')
+       
             if (res.status === 200 && 'users' in res) {
                 setUsers(res.users);
             } else {
@@ -74,7 +74,6 @@ export const AdminPanel = () => {
         try {
             setLoading(true);
         const status = await fetch_delete_user({id: String(userDelete)})
-        console.log(status,'status delete file')
         if (status == 200) {
             //обновляем список
             setStatusRefreshListFiles(true);
@@ -212,7 +211,7 @@ export const AdminPanel = () => {
 
 {sortedUsers && sortedUsers.map((user: User, index: number) => (
 
-<tbody>
+<tbody key={user.id}>
   <tr key={user.id}>
     <td scope="row">{Number(index) + 1}</td>
     <td className="admin-background-table">{user.username}</td>

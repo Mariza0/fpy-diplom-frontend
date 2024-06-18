@@ -64,10 +64,10 @@ export const Register = () => {
             const res = await register_user(data, csrf);
             if (res.status == 201) {
                 
-                localStorage.setItem('isAuthenticated', 'true');//sessionStorage.setItem('isAuthenticated', 'true');
+                localStorage.setItem('isAuthenticated', 'true');
                 if ('username' in res) {
-                localStorage.setItem('username', res.username);//sessionStorage.setItem('username', res.username);
-                localStorage.setItem('userId', res.userId);//sessionStorage.setItem('userId', res.userId);
+                localStorage.setItem('username', res.username);
+                localStorage.setItem('userId', res.userId);
                 dispatch(apiIsAuthenticated(true));
                 navigate(`/storage/users/${res.userId}`);
                 }

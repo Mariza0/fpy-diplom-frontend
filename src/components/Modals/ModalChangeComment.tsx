@@ -30,8 +30,7 @@ const  handleSubmitChangeComment: FormEventHandler<HTMLFormElement> = async (e) 
     // const id = formDataChangeComment.id;
 
     try {
-        const status = await fetch_change_comment({comment: comment, id: String(fileId)})
-        console.log(status)
+        await fetch_change_comment({comment: comment, id: String(fileId)})
 
         // закрываем модалку и очищаем форму
         onClose()

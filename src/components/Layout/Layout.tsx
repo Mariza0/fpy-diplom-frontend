@@ -1,20 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "../Header";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getSession, get_csrf } from "../../api/api";
 import { apiCsrf, apiError, apiIsAuthenticated } from "../../actions/apiCreators";
-import { RootState } from "../../interfaces";
+
 
 export const Layout = () => {
 
   const dispatch = useDispatch();
 
-  const { csrf } = useSelector((state: RootState) => state.api);
-  console.log(csrf,'csrf')
-
   useEffect(() => {
     const fetchSession = async () => {
+      console.log('запрос сессии из layOut')
       try {
         const data = await getSession();
         if (data.status === 200 && data) {
@@ -36,7 +34,6 @@ export const Layout = () => {
 
           // Запрашиваем новый CSRF-токен для неавторизованного пользователя
           const csrf = await get_csrf() || '';
-          console.log(csrf,'csrf в Layout')
           dispatch(apiCsrf(csrf));
         }
       } catch (error) {

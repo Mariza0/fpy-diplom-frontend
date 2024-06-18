@@ -14,8 +14,8 @@ export const Login = () => {
   const { error, csrf, loading } = useSelector(
     (state: RootState) => state.api
   );
-  const userId = localStorage.getItem('userId');//sessionStorage.getItem('userId');
-  const is_authenticated = localStorage.getItem('isAuthenticated');//sessionStorage.getItem('isAuthenticated');
+  const userId = localStorage.getItem('userId');
+  const is_authenticated = localStorage.getItem('isAuthenticated');
 
   useEffect(() => {
     if (is_authenticated == 'true') {
@@ -43,21 +43,21 @@ export const Login = () => {
       //достаем csrf token из глоб состояния
       const csrfToken = csrf;
       const res = await login({username, password, csrfToken});
-      console.log(res)
+
       if (res.status == 200) {  
 
         if ('userId' in res) {
-          localStorage.setItem('userId', res.userId);//sessionStorage.setItem('userId', res.userId);
-          localStorage.setItem('isAuthenticated', 'true');//sessionStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userId', res.userId);
+          localStorage.setItem('isAuthenticated', 'true');
 
         }
         if ('is_admin' in res) {
           if (res.is_admin == true) {
-            localStorage.setItem('is_admin', 'true');//sessionStorage.setItem('is_admin', 'true');
+            localStorage.setItem('is_admin', 'true');
           }
         }
         if ('username' in res) {
-          localStorage.setItem('username', res.username);//sessionStorage.setItem('username', res.username);
+          localStorage.setItem('username', res.username);
         }
         dispatch(apiIsAuthenticated(true))
     
@@ -70,8 +70,7 @@ export const Login = () => {
       dispatch(apiError(error))
     }
    } catch (err) {
-      console.log(err);
-      dispatch(apiError(String(err)))
+      dispatch(apiError('Произошла ошибка. Повторите попытку позднее.'))
     }
   };
 

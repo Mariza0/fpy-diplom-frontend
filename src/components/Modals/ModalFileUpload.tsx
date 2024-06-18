@@ -66,14 +66,11 @@ const handleChooseFile: MouseEventHandler<HTMLButtonElement> = (e) => {
 // Выбор файла
 const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    console.log('выбираемфайл')
     const files = e.target.files;
 
     if (files && files.length > 0) {
       const file = files[0] || null;
-      console.log(file,'file')
       setSelectedFile(file);
-      console.log(file.name,'file.name')
       setButtonText(file.name);
 
     } else {

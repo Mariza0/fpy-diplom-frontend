@@ -1,30 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
 import { apiError, apiLoading } from "../../actions/apiCreators";
 import { logout_user } from "../../api/api";
 import { RootState } from "../../interfaces";
+
 
 export const Nav = () => {
 
     const active = ({ isActive }: { isActive: boolean }) => isActive ? "active" : "";
     const userId = localStorage.getItem('userId');
     const is_admin = localStorage.getItem('is_admin');
-    const usernameSessionRef = useRef(localStorage.getItem('username'));
+    const usernameLocalStorage = localStorage.getItem('username');
+    useSelector((state: RootState) => state.api);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    // используем redux чтобы перерендеривать компонент при изменении глобального state 
-    const { username } = useSelector(
-        (state: RootState) => state.api
-      );
-
-      useEffect(() => {
-       // при изменении имени пользователя в компоненте будет обновляться
-       if (username !== usernameSessionRef.current) {
-        usernameSessionRef.current = username;
-    }
-}, [username]);
 
     // обнуляем ошибку для повторного входа
     const handleLink = async () => {  
@@ -42,7 +31,7 @@ export const Nav = () => {
           console.log(res.message,'es.message')
           navigate('/api')
         }
-        localStorage.clear();//sessionStorage.clear();
+        localStorage.clear();
           // Перезагружаем страницу
           window.location.reload();
     } catch (error) {
@@ -63,10 +52,10 @@ export const Nav = () => {
                         Главная
                     </NavLink>
                 </li>
-                {usernameSessionRef.current ? (
+                {usernameLocalStorage ? (
                     <>
                         <li className="nav-item">
-                        <NavLink className="nav-link" to={`/storage/users/${userId}`}>{usernameSessionRef.current}</NavLink>
+                        <NavLink className="nav-link" to={`/storage/users/${userId}`}>{usernameLocalStorage}</NavLink>
                         </li>
 
                         <li className="nav-item">

@@ -17,6 +17,7 @@ import { Error } from "./Erorr";
 // панель хранилища любого пользователя
 export const StoragePanel: React.FC<StoragePanelProps> = ({ listFilesUser, username })  => {
 
+
     const { error } = useSelector((state: RootState) => state.api);
 
     // берем user id из параметров ссылки
@@ -41,21 +42,15 @@ export const StoragePanel: React.FC<StoragePanelProps> = ({ listFilesUser, usern
     const [isModalShareLink, setIsModalShareLink] = useState(false);
     const [isModalChangeUser, setIsModalChangeUser] = useState(false);
     const [isModalConfirmDelete, setIsModalConfirmDelete] = useState(false);
-    //const [filename, setFileName] = useState(null);
-
     const [ statusRefreshListFiles, setStatusRefreshListFiles] = useState(false);
-    
     const [ listFiles, setListFiles ] = useState<Files>([])
       
     // перерендеринг компонента при изменении количества файлов пользователя
       useEffect(() => {
-
-        console.log("listFilesUser on load:", listFilesUser);
         if (listFilesUser) {
             setListFiles(listFilesUser);
         }
     }, [listFilesUser]);
-    console.log('listFilesUser: ', listFilesUser)
 
     // открытие модального окна изменения названия файла
 const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
@@ -80,19 +75,25 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
     useEffect(() => {
         if (statusRefreshListFiles) {
-            console.log('Обновляем список файлов');
+            console.log('Обновляем список файлов в storagePanel');
 
             const loadFiles = async () => {
                         setLoading(true); // Установка состояния загрузки
                         try {
                             const res = await fetch_storage_id(userId || '');
+                            console.log(res.status,'res.status')
                             if (res.status == 200 && 'files' in res) {
                                 setListFiles(res.files);
-                                //setUsername(res.username);
+                            
+                            } else {
+                                if ('error' in res)
+                                dispatch(apiError(res.error))
                             }
                            
                         } catch (error) {
+                            dispatch(apiError(String(error)))
                             console.error('Error fetching files:', error);
+                          
                         } finally {
                             setLoading(false); // Завершение загрузки
                         }
@@ -101,7 +102,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
             setStatusRefreshListFiles(false);
         }
-    }, [statusRefreshListFiles, userId]);
+    }, [statusRefreshListFiles, userId, dispatch]);
 
     const [, setLoading] = useState(true);
     
@@ -242,7 +243,8 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
     return (
         <>
-        { error && <Error/> }
+        { error && <Error/>
+         }
         { !error &&
         <>
         {/* модальное окно выбора файла и отправки на сервер */}
@@ -323,7 +325,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
             {sortedFiles.length >0 && sortedFiles.map((item: File, index: number) => (
 
-<tbody>
+<tbody key={item.id}>
   <tr key={item.id}>
     <td scope="row">{index + 1}</td>
     <td><a href="#" data-item-id={item.id} onClick={(e) => handleLinkClick(e, item.file_name)}>{item.file_name}</a></td>

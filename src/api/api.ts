@@ -8,7 +8,6 @@ const csrfToken = async () => {
   const csrf = csrfState;
   if (!csrf) {
       const newCsrfToken = await get_csrf();
-      console.log(newCsrfToken,'newCsrfToken')
       return newCsrfToken;
   }
   return csrf;
@@ -92,14 +91,6 @@ export const get_csrf = async () => {
     }
   }
 
-  // const isResponseOk = (response: { status: number; json: () => any; statusText: string | undefined; }) => {
-  //   if (response.status >= 200 && response.status <= 299) {
-  //     return response.json();
-  //   } else {
-  //     throw Error(response.statusText);
-  //   }
-  // }
-
   // LOGIN user
   // в случае если пользователь не авторизован, отправляем логин/пароль
   export const login = async ( data: { username: string, password: string, csrfToken: string  }) => {
@@ -144,11 +135,10 @@ export const fetch_users = async () => {
   const responseData = await response.text();
   const result = await JSON.parse(responseData);
 
-  console.log(result,'result')
   return result;
 
   } catch (error) {
-      console.error('Error:', error);
+
       return {
         message: "Ошибка сервера",
         status: 500
@@ -174,7 +164,6 @@ export const fetch_user_data = async (user_id: string) => {
   const responseData = await response.text();
   const result = await JSON.parse(responseData);
 
-  console.log(result,'result')
   return result;
 
   } catch (error) {
@@ -191,7 +180,6 @@ export const fetch_user_data = async (user_id: string) => {
 export const fetch_change_user = async (userId: string, data: { username?:string, full_name?: string, email?: string }) => {
 
   const { username, email, full_name } = data;
-  console.log(userId,'userId')
 
   const formData = new FormData();
 
@@ -250,7 +238,6 @@ export const fetch_change_status = async (userId: string, statusAdmin: string) =
       throw new Error(errorData.message || 'Failed to update user.');
     }
 
-    console.log(response.json())
     return {status: response.status};
 
   } catch (error) {

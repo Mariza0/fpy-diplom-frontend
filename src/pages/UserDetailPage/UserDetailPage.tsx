@@ -1,43 +1,67 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { StoragePanel } from "../../components/StoragePanel";
 import { fetch_storage_id } from "../../api/storage";
-import { useEffect, useState } from "react";
-import { Files } from "../../interfaces";
+import { useCallback, useEffect, useState } from "react";
+import { Files, RootState } from "../../interfaces";
+import { apiError } from "../../actions/apiCreators";
+import { useDispatch, useSelector } from "react-redux";
+import { Error } from "../../components/Erorr"
 
 export const UserDetailPage = () => {
 
-    //const userId = sessionStorage.getItem('userId');
+    const { error } = useSelector((state: RootState) => state.api);
+
     const { userId } = useParams();
-    const userIdSession = localStorage.getItem('userId');//sessionStorage.getItem('userId');
-    const isAuthenticated = localStorage.getItem('isAuthenticated');//sessionStorage.getItem('isAuthenticated');
-    const is_admin = localStorage.getItem('is_admin');//sessionStorage.getItem('is_admin');
+    const userIdSession = localStorage.getItem('userId');
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    const is_admin = localStorage.getItem('is_admin');
     const [loading, setLoading] = useState<boolean>(false);
     const [ listFiles, setListFiles ] = useState<Files>([]);
     const [ username, setUsername ] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    useEffect(() => {
         // получаем файлы выбранного пользователя
-            const loadFiles = async () => {
+            const loadFiles = useCallback(async () => {
+                console.log('получаем список файлов в UserDetailPage');
                 setLoading(true); // Установка состояния загрузки
                 try {
                     const res = await fetch_storage_id(userId || '');
+                    console.log(`Запрос списка файлов для пользователя userId=${userId}`)
                     if (res.status == 200 && 'files' in res) {
                         setListFiles(res.files);
                         setUsername(res.username);
-                    }
-                   
+                    } else {
+                    if ('error' in res) 
+                        {
+                            dispatch(apiError(res.error))
+                        }
+                    }                   
                 } catch (error) {
                     console.error('Error fetching files:', error);
                 } finally {
                     setLoading(false); // Завершение загрузки
                 }
-            };
-            loadFiles();
-        }, [navigate, userId]);
+            }, [userId, dispatch]);
+            
+           
+            useEffect(() => {
+                loadFiles();
+            }, [loadFiles]);
     
     return (
   <>
+  {loading && 
+  <>
+  <div className="preloader">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+ </div> 
+  </>
+  }
+  {error && <Error/>}
         {is_admin && !loading &&
         <>
         <br/>

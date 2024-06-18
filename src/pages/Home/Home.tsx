@@ -7,8 +7,7 @@ export const Home = () => {
   
         <>
             <About/> 
-
-            </>  
+        </>  
 
     );
   };

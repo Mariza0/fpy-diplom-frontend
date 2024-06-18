@@ -1,4 +1,5 @@
 import { get_csrf } from "./api";
+import { ListFilesResponse, UserFilesResponse } from "../interfaces";
 
 const state = {
     csrf: '',
@@ -8,13 +9,11 @@ const csrfToken = async () => {
     const csrf = state.csrf;
     if (!csrf) {
         const newCsrfToken = await get_csrf();
-        console.log(newCsrfToken,'newCsrfToken')
         return newCsrfToken;
     }
     return csrf;
 };
 
-import { ListFilesResponse, UserFilesResponse } from "../interfaces";
 
 const server = import.meta.env.VITE_SERVER;
 
@@ -49,7 +48,7 @@ export const fetch_storage_id = async (id: string): Promise<UserFilesResponse> =
 
     try {const response = await fetch(apiUrl, {
         method: 'GET',
-        credentials: 'include',  
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             "X-CSRFToken": csrf,
@@ -57,10 +56,8 @@ export const fetch_storage_id = async (id: string): Promise<UserFilesResponse> =
     });
 
     const responseData = await response.text();
-
     const result = await JSON.parse(responseData);
 
-    console.log(result,'result в запросе списка пользователей')
     return result;
 }
     catch (error) {
@@ -79,7 +76,7 @@ export const fetch_change_file_name = async (data:{name: string, id: string}) =>
         let csrfToken = state.csrf;
 
         if (!csrfToken) {
-            console.log('запрос csrf');
+
             csrfToken = await get_csrf() || '';
         }
 
@@ -95,7 +92,8 @@ export const fetch_change_file_name = async (data:{name: string, id: string}) =>
         if (!res.ok) {
             throw new Error('Network response was not ok');
         }
-        return await res.json();
+    
+        return res.status;
 
     } catch (error) {
         console.error('Error downloading file:', error);
@@ -112,7 +110,7 @@ export const fetch_change_comment = async (data:{comment: string, id: string}) =
 
         let csrfToken = state.csrf;
         if (!csrfToken) {
-            console.log('запрос csrf');
+           
             csrfToken = await get_csrf() || ''//getCSRF() || '';
         }
 
@@ -135,14 +133,6 @@ export const fetch_change_comment = async (data:{comment: string, id: string}) =
     }
 };
 
-const isResponseOk = async (response: Response) => {
-    if (response.status >= 200 && response.status <= 299) {
-      return response.ok;
-    } else {
-      throw new Error(response.statusText);
-    }
-  };
-
 // отправка файла на диск //
 export const fetch_upload_file = async (data: {file: File, userId?:string, comment: string}) => {
 
@@ -155,7 +145,7 @@ export const fetch_upload_file = async (data: {file: File, userId?:string, comme
 
     let csrfToken = state.csrf;
         if (!csrfToken) {
-            console.log('запрос csrf');
+         
             csrfToken = await get_csrf() || '';
         }
 
@@ -168,9 +158,6 @@ export const fetch_upload_file = async (data: {file: File, userId?:string, comme
                 credentials: "include",
                 body: formData,
                 });
-
-                const result = await res.json()//isResponseOk(res);
-                console.log(result,'result pri sohranenii');
 
                 if (!res.ok) {
                     throw new Error('Network response was not ok');
@@ -189,7 +176,7 @@ export const fetch_delete_user = async (data: {id: string}) => {
 
   let csrfToken = state.csrf;
     if (!csrfToken) {
-        console.log('запрос csrf');
+
         csrfToken = await get_csrf() || ''
     }
     try {
@@ -290,7 +277,6 @@ export const feth_share_link = async (data: {id: string}) => {
 
     let csrfToken = state.csrf;
     if (!csrfToken) {
-        console.log('запрос csrf');
         csrfToken = await get_csrf() || ''//getCSRF() || '';
     }
 
@@ -303,9 +289,6 @@ export const feth_share_link = async (data: {id: string}) => {
             },
             credentials: "include",
         });
-        
-        const resul = await isResponseOk(res);
-        console.log(resul,'result pri sohranenii');
         
         if (!res.ok) {
             throw new Error('Network response was not ok');

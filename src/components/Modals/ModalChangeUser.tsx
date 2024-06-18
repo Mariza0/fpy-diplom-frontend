@@ -51,8 +51,7 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
 
         // Сравнение данных формы с первоначальными данными
         if (JSON.stringify(formData) === JSON.stringify(initialData)) {
-            console.log("No changes detected, not sending request");
-            onClose()
+            onClose();
             return; // если данные не изменились, не отправляем запрос
         }
 
@@ -78,11 +77,10 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
                     dispatch(apiError("Ошибка. Повторите попытку позднее "))
                 }
         
-        console.log(res)
-        onClose()
+        onClose();
 
     } catch(err) {
-        console.log(err)
+        console.log(err);
     }
 
     }
