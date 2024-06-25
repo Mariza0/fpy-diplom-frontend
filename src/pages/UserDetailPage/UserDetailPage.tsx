@@ -23,19 +23,18 @@ export const UserDetailPage = () => {
 
         // получаем файлы выбранного пользователя
             const loadFiles = useCallback(async () => {
-                console.log('получаем список файлов в UserDetailPage');
+       
                 setLoading(true); // Установка состояния загрузки
                 try {
                     const res = await fetch_storage_id(userId || '');
-                    console.log(`Запрос списка файлов для пользователя userId=${userId}`)
+              
                     if (res.status == 200 && 'files' in res) {
                         setListFiles(res.files);
                         setUsername(res.username);
                     } else {
-                    if ('error' in res) 
-                        {
-                            dispatch(apiError(res.error))
-                        }
+              
+                            dispatch(apiError('Ошибка запроса'))
+                        
                     }                   
                 } catch (error) {
                     console.error('Error fetching files:', error);
@@ -62,6 +61,8 @@ export const UserDetailPage = () => {
   </>
   }
   {error && <Error/>}
+  {!loading && !error &&
+  <>
         {is_admin && !loading &&
         <>
         <br/>
@@ -89,6 +90,9 @@ export const UserDetailPage = () => {
             </div>
         </> 
     }
+    </>
+    }
+  
     </>
 
     );

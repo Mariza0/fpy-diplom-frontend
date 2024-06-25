@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { fetch_change_user } from "../../api/api";
 import { ModalChangeUserProps } from "../../interfaces";
 import { apiError } from "../../actions/apiCreators";
+import { OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 
 export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeUser, data, onClose }) => {
 
@@ -46,6 +47,11 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
             
       };
 
+      const validateLogin = (login: string): boolean => {
+        const regex = /^[a-zA-Z][a-zA-Z0-9]{3,19}$/;
+        return regex.test(login);
+    };
+
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault()
 
@@ -53,6 +59,11 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
         if (JSON.stringify(formData) === JSON.stringify(initialData)) {
             onClose();
             return; // если данные не изменились, не отправляем запрос
+        }
+
+        if (!validateLogin(formData.username)) {
+            alert('Логин должен состоять только из латинских символов и цифр, начинаться с буквы, и быть длиной от 4 до 20 символов.');
+            return;
         }
 
         const { username, full_name, email } = formData;
@@ -82,8 +93,12 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
     } catch(err) {
         console.log(err);
     }
-
     }
+
+    const renderTooltipLogin = (props: TooltipProps) => (
+        <Tooltip id="button-tooltip" {...props}>
+        Логин должен состоять только из латинских символов и цифр, начинаться с буквы, и быть длиной от 4 до 20 символов.
+        </Tooltip>)
 
     return (
         <>
@@ -108,6 +123,10 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
 
                     <div className="form-group">
                         <label htmlFor="login">Логин</label>
+                        <OverlayTrigger 
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderTooltipLogin}>
                     <input type="login" className="form-control" 
                         id="username" 
                         name="username"
@@ -115,6 +134,7 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
                       
                         onChange={handleChange}
                         required/>
+                        </OverlayTrigger>
                     </div>
 
                     <div className="form-group">

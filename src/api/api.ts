@@ -2,15 +2,9 @@ import { GetSessionResponse, RegisterResponse } from "../interfaces";
 
 const server = import.meta.env.VITE_SERVER;
 
-let csrfState = '';
-
 const csrfToken = async () => {
-  const csrf = csrfState;
-  if (!csrf) {
       const newCsrfToken = await get_csrf();
       return newCsrfToken;
-  }
-  return csrf;
 };
 
 // РЕГИСТРАЦИЯ пользователя
@@ -36,8 +30,8 @@ export const register_user = async (data: { username: string,
 
       const responseData = await response.text();
       const res = JSON.parse(responseData);
-      const csrfToken = res.csrf_token || '';
-      csrfState = csrfToken;
+       const csrfToken = res.csrf_token || '';
+      // csrfState = csrfToken;
 
       return {
         status: response.status,
@@ -69,7 +63,6 @@ export const getSession = async (): Promise<GetSessionResponse> => {
     return data as GetSessionResponse;
 
   } catch(err) {
-    console.log(err);
     return {isAuthenticated: false, message: 'Произошла ошибка. Повторите попытку соединения с сервером позднее.', 
     status: 403, username: '', userId: '', is_admin: false}
   }
@@ -87,7 +80,6 @@ export const get_csrf = async () => {
       const csrfToken = res.headers.get("X-CSRFToken");
       return csrfToken;
     } catch (err) {
-      console.log(err);
     }
   }
 
@@ -96,7 +88,6 @@ export const get_csrf = async () => {
   export const login = async ( data: { username: string, password: string, csrfToken: string  }) => {
 
     const csrfToken = data.csrfToken;
-    console.log(csrfToken,'csrfToken')
 
     try {
       const response = await fetch(`${server}/api/login/`, {
@@ -188,20 +179,14 @@ export const fetch_change_user = async (userId: string, data: { username?:string
   if (full_name) formData.append('full_name', full_name);
 
   const apiUrl = `${server}/users/change/${Number(userId)}/`;
-
-  let csrfToken = csrfState;
-
-  if (!csrfToken) {
-
-      csrfToken = await get_csrf() || '';
-  }
+  const csrf = await csrfToken() || '';
 
   try {
     const response = await fetch(apiUrl, {
       method: 'PATCH',
       body: formData,
       headers: {
-        "X-CSRFToken": csrfToken,
+        "X-CSRFToken": csrf,
       },
       credentials: 'include'
     });

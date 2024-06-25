@@ -34,7 +34,7 @@ export const ModalShareLink: React.FC<ModalShareLinkProps> = ({ fileId, onClose 
     // скопировать ссылку
     const handleCopyClick = () => {
         // Копирование текста с использованием navigator.clipboard.writeText
-        const linkValue = formShareLink.link ;
+        const linkValue = formShareLink.link;
         navigator.clipboard.writeText(linkValue)
         .then(() => {
             alert('Text copied to clipboard');

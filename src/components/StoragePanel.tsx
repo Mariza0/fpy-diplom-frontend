@@ -139,7 +139,7 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
                     return;
                 } else {
                      // обновляем список файлов
-                     console.log('обновляем список файлов')
+              
                      setStatusRefreshListFiles(true);
                 }
             }

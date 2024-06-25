@@ -43,10 +43,12 @@ const server = import.meta.env.VITE_SERVER;
  //////// Запрос списка файлов на диске по id пользователя
 export const fetch_storage_id = async (id: string): Promise<UserFilesResponse> => {
 
-    const apiUrl = `${server}/storage/${Number(id)}/`;
+    //const apiUrl = `${server}/storage/${Number(id)}/`; change 25/06
+    const apiUrl = `${server}/storage/${id}/`;
     const csrf = await csrfToken() || '';
 
-    try {const response = await fetch(apiUrl, {
+    try {
+        const response = await fetch(apiUrl, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -54,7 +56,7 @@ export const fetch_storage_id = async (id: string): Promise<UserFilesResponse> =
             "X-CSRFToken": csrf,
         },
     });
-
+  
     const responseData = await response.text();
     const result = await JSON.parse(responseData);
 

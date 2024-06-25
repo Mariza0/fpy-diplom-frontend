@@ -1,30 +1,55 @@
-# React + TypeScript + Vite
+# Дипломный Проект Облачное Хранилище My Cloud
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Описание
 
-Currently, two official plugins are available:
+Этот проект представляет собой вэб-приложение, которое будет работать как облачное хранилище. 
+Приложение позволяет регистрировать пользователя, изменять данные профиля, загружать в облачное хранилище и управлять файлами в хранилище. 
+Для пользователя с правами администратора предоставляется список всех пользователей с возможностью управлениями профилями и  их дисковым пространством. В
+ этом документе описан процесс сборки и подготовки артефактов фронтенда, необходимых для развертывания.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Требования
 
-## Expanding the ESLint configuration
+Для сборки и запуска фронтенда, вам понадобятся:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Node.js (рекомендуется версия 14.x или выше)
+- npm (рекомендуется версия 6.x или выше) или yarn (опционально)
 
-- Configure the top-level `parserOptions` property like this:
+## Установка
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+1. Клонируйте репозиторий:
+
+```sh
+git clone https://github.com/Mariza0/fpy-diplom-frontend.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Перейдите в директорию проекта:
+```sh
+cd fpy-diplom-frontend
+```
+
+3. Установите зависимости:
+```sh
+npm install
+```
+или, если вы используете Yarn:
+
+```sh
+yarn install
+```
+
+## Сборка
+Для создания сборки фронтенда выполните следующую команду:
+
+```sh
+npm run build
+```
+или, если вы используете Yarn:
+
+```sh
+yarn build
+```
+Эта команда создаст оптимизированную сборку вашего приложения в директории build.
+
+## Развертывание
+Подготовка артефактов
+После выполнения команды сборки, все необходимые артефакты для развертывания будут находиться в директории build. Вам нужно скопировать содержимое этой директории на ваш сервер.
