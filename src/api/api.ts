@@ -201,7 +201,7 @@ export const fetch_change_user = async (userId: string, data: { username?:string
     console.error('Error updating user:', error);
     return {
       message: error,
-      status: 500
+      status: 500,
     }
   }
 };

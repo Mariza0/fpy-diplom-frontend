@@ -12,7 +12,7 @@ export const Layout = () => {
 
   useEffect(() => {
     const fetchSession = async () => {
-      console.log('запрос сессии из layOut')
+  
       try {
         const data = await getSession();
         if (data.status === 200 && data) {

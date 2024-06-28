@@ -188,7 +188,7 @@ export const AdminPanel = () => {
 
             <br/>
             <button type="button" className="btn btn-users  btn-secondary me-2" 
-            onClick={() => navigate(`/storage/users/${userId}`)} >
+            onClick={() => navigate(`/storage/${userId}`)} >
                 Вернуться в мой диск
             </button>
             

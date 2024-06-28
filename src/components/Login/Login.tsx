@@ -19,7 +19,7 @@ export const Login = () => {
 
   useEffect(() => {
     if (is_authenticated == 'true') {
-      navigate(`/storage/users/${userId}`);
+      navigate(`/storage/${userId}`);
     }
   }, [is_authenticated, navigate, userId]);
 

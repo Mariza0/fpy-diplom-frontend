@@ -55,7 +55,7 @@ export const Nav = () => {
                 {usernameLocalStorage ? (
                     <>
                         <li className="nav-item">
-                        <NavLink className="nav-link" to={`/storage/users/${userId}`}>{usernameLocalStorage}</NavLink>
+                        <NavLink className="nav-link" to={`/storage/${userId}`}>{usernameLocalStorage}</NavLink>
                         </li>
 
                         <li className="nav-item">

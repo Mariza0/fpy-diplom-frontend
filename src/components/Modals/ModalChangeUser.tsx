@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { fetch_change_user } from "../../api/api";
 import { ModalChangeUserProps } from "../../interfaces";
-import { apiError } from "../../actions/apiCreators";
 import { OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 
 export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeUser, data, onClose }) => {
 
-    const dispatch = useDispatch();
 
     const [loading, setLoading] = useState(false);
 
@@ -85,7 +82,8 @@ export const ModalChangeUser: React.FC<ModalChangeUserProps> = ({ isModalChangeU
                     setLoading(false);
                 }
                 else {
-                    dispatch(apiError("Ошибка. Повторите попытку позднее "))
+                    alert('Ошибка. Имя уже существует')
+                    return
                 }
         
         onClose();
