@@ -33,8 +33,10 @@ export const ModalShareLink: React.FC<ModalShareLinkProps> = ({ fileId, onClose 
 
     // скопировать ссылку
     const handleCopyClick = () => {
-        // Копирование текста с использованием navigator.clipboard.writeText
-        const linkValue = formShareLink.link;
+         // Копирование текста с использованием navigator.clipboard.writeText
+    const linkValue = formShareLink.link;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(linkValue)
         .then(() => {
             alert('Text copied to clipboard');
@@ -42,6 +44,22 @@ export const ModalShareLink: React.FC<ModalShareLinkProps> = ({ fileId, onClose 
         .catch((err) => {
             console.error('Failed to copy text: ', err);
         });
+    } else {
+        // Альтернативный метод для копирования текста
+        const tempInput = document.createElement('input');
+        tempInput.value = linkValue;
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+        try {
+            document.execCommand('copy');
+            alert('Text copied to clipboard');
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+        
+        document.body.removeChild(tempInput);
+    }
     }
     
     const onCloseModal = () => {

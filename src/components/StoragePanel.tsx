@@ -75,13 +75,12 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
 
     useEffect(() => {
         if (statusRefreshListFiles) {
-            console.log('Обновляем список файлов в storagePanel');
 
             const loadFiles = async () => {
                         setLoading(true); // Установка состояния загрузки
                         try {
                             const res = await fetch_storage_id(userId || '');
-                            console.log(res.status,'res.status')
+                         
                             if (res.status == 200 && 'files' in res) {
                                 setListFiles(res.files);
                             
@@ -133,16 +132,13 @@ const handleChangeFileNameModal: MouseEventHandler<HTMLElement> = async (e) => {
             setLoading(true);
             const res = await fetch_delete_file(fileId);
 
-            if (res) {
-                if (res.status != 204) {
-                    dispatch(apiError('Не удалось выполнить удаление файла'));
-                    return;
-                } else {
-                     // обновляем список файлов
-              
-                     setStatusRefreshListFiles(true);
-                }
+            if (res && res.status === 204) {
+                setListFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+                setStatusRefreshListFiles(true);
+            } else {
+                dispatch(apiError('Не удалось выполнить удаление файла'));
             }
+            
         } catch(error) {
             dispatch(apiError(String(error)))
         } finally {

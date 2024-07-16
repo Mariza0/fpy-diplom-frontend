@@ -1,4 +1,4 @@
-import { GetSessionResponse, RegisterResponse } from "../interfaces";
+import { GetSessionResponse } from "../interfaces";
 
 const server = import.meta.env.VITE_SERVER;
 
@@ -12,7 +12,7 @@ export const register_user = async (data: { username: string,
                                             password: string, 
                                             full_name: string, 
                                             email: string, }, 
-                                            csrf: string): Promise<RegisterResponse> => {
+                                            csrf: string) => {
  
   const apiUrl = `${server}/users/register/`;
 
@@ -29,16 +29,17 @@ export const register_user = async (data: { username: string,
       });
 
       const responseData = await response.text();
+  
       const res = JSON.parse(responseData);
-       const csrfToken = res.csrf_token || '';
-      // csrfState = csrfToken;
-
-      return {
-        status: response.status,
-        userId: res.id,
-        username: res.username,
-        csrfToken: csrfToken,
-    };
+      const message = JSON.stringify(res.message)
+  
+      const csrfToken = res.csrf_token || '';
+      
+    return {message: message,
+            status: response.status,
+            userId: res.id,
+            username: res.username,
+            csrfToken: csrfToken,}
     }
     catch (error) {
       return {
@@ -80,6 +81,7 @@ export const get_csrf = async () => {
       const csrfToken = res.headers.get("X-CSRFToken");
       return csrfToken;
     } catch (err) {
+      console.error(err)
     }
   }
 

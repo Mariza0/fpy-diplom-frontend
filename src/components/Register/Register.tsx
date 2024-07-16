@@ -43,7 +43,7 @@ export const Register = () => {
     };
 
     const validatePassword = (password: string): boolean => {
-        const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*]).{6,}$/;
+        const regex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$/;
         return regex.test(password);
     };
      
@@ -94,7 +94,10 @@ export const Register = () => {
                 }
 
             } else {
-                dispatch(apiError("Ошибка регистрации. Повторите попытку позднее"));
+            
+                if (res.message){ dispatch(apiError(String(res.message)))} 
+                else {
+                dispatch(apiError("Ошибка регистрации. Повторите попытку позднее"));}
             }
         } catch (err) {
             console.log(err);
@@ -144,7 +147,7 @@ return (
 
         }
 
-        {!loading &&
+        {!loading && !error &&
 
             <div className="container-form">
 
